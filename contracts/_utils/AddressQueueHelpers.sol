@@ -4,7 +4,7 @@ pragma solidity ^0.8.0;
 struct AddressQueue {
     // @notice Mapping between queue index and address.
     mapping(uint256 => address) queue;
-    // @notice Mapping to check address existance.
+    // @notice Mapping to check address existence.
     mapping(address => bool) items;
     // @notice Index of the first address.
     uint256 first;
@@ -74,7 +74,7 @@ library AddressQueueHelpers {
     // @param q Queue storage.
     // @return The queue size.
     function length(AddressQueue storage q) internal view returns (uint256) {
-        return q.last - q.first + 1;
+        return q.last >= q.first ? q.last - q.first + 1 : 0;
     }
 
     // @notice Fetches the item at a given index (indexed from 0 to length-1).
