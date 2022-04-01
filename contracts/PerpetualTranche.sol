@@ -258,7 +258,7 @@ contract PerpetualTranche is ERC20, Initializable, Ownable, IPerpetualTranche {
         // calculates the fee to mint `mintAmt` of perp token
         mintFee = feeStrategy.computeMintFee(mintAmt);
 
-        // Handle tranche transfer in
+        // Handles tranche transfer in
         {
             // transfers deposited tranches from the sender to the reserve
             _transferIntoReserve(_msgSender(), trancheIn, trancheInAmt);
@@ -268,7 +268,7 @@ contract PerpetualTranche is ERC20, Initializable, Ownable, IPerpetualTranche {
             _checkAndEnqueueTranche(trancheIn);
         }
 
-        // Handle perp and fee transfer
+        // Handles perp and fee transfer
         {
             // mints perp tokens to the sender
             _mint(_msgSender(), mintAmt);
@@ -316,7 +316,7 @@ contract PerpetualTranche is ERC20, Initializable, Ownable, IPerpetualTranche {
         // calculates the fee to burn `burnAmt` of perp token
         burnFee = feeStrategy.computeBurnFee(burnAmt);
 
-        // Handle perp and fee transfer
+        // Handles perp and fee transfer
         {
             // burns perp tokens from the sender
             _burn(_msgSender(), burnAmt);
@@ -332,7 +332,7 @@ contract PerpetualTranche is ERC20, Initializable, Ownable, IPerpetualTranche {
             }
         }
 
-        // Handle tranche transfer out
+        // Handles tranche transfer out
         {
             // transfers redeemed tranches from the reserve to the sender
             uint256 reserveBalance = _transferOutOfReserve(_msgSender(), trancheOut, trancheOutAmt);
@@ -348,12 +348,14 @@ contract PerpetualTranche is ERC20, Initializable, Ownable, IPerpetualTranche {
     }
 
     /// @inheritdoc IPerpetualTranche
-    // TODO: This will fail if the trancheOutAmt isn't covered.
+    // @dev This will revert if the trancheOutAmt isn't covered.
     function rollover(
         ITranche trancheIn,
         ITranche trancheOut,
         uint256 trancheInAmt
-    ) external override returns (uint256 trancheOutAmt, int256 fee) {
+    ) external override returns (uint256 trancheOutAmt, int256 rolloverFee) {
+        require(trancheIn != trancheOut, "Expected trancheIn and trancheOut NOT be the same");
+
         IBondController bondIn = IBondController(trancheIn.bond());
         require(bondIn == getDepositBond(), "Expected tranche to be of deposit bond");
         require(!_redemptionQueue.contains(address(trancheOut)), "Expected trancheOut to NOT be in the queue");
@@ -366,9 +368,9 @@ contract PerpetualTranche is ERC20, Initializable, Ownable, IPerpetualTranche {
         require(rolloverAmt > 0 && trancheOutAmt > 0, "Expected to rollover a non-zero amount of tokens");
 
         // calculates the fee to rollover `rolloverAmt` of perp token
-        fee = feeStrategy.computeRolloverFee(rolloverAmt);
+        rolloverFee = feeStrategy.computeRolloverFee(rolloverAmt);
 
-        // handle tranche transfer in
+        // Handles tranche transfer in
         {
             // transfers tranche tokens from the sender to the reserve
             _transferIntoReserve(_msgSender(), trancheIn, trancheInAmt);
@@ -378,16 +380,16 @@ contract PerpetualTranche is ERC20, Initializable, Ownable, IPerpetualTranche {
             _checkAndEnqueueTranche(trancheIn);
         }
 
-        // Handle tranche transfer out and fee transfer
+        // Handles tranche transfer out and fee transfer
         {
             // transfers tranche tokens from the reserve to the sender
             _transferOutOfReserve(_msgSender(), trancheOut, trancheOutAmt);
 
             // settles fees
-            _settleFee(_msgSender(), fee);
+            _settleFee(_msgSender(), rolloverFee);
         }
 
-        return (trancheOutAmt, fee);
+        return (trancheOutAmt, rolloverFee);
     }
 
     /// @inheritdoc IPerpetualTranche
@@ -575,7 +577,7 @@ contract PerpetualTranche is ERC20, Initializable, Ownable, IPerpetualTranche {
             // the payer, since this is still an internal call {msg.sender} will still point to the payer
             // and we can just "transfer" from the payer's wallet.
             if (isNativeFeeToken) {
-                require(transfer(_self(), fee_), "Native fee token transfer failed");
+                transfer(_self(), fee_);
             } else {
                 feeToken_.safeTransferFrom(payer, _self(), fee_);
             }
