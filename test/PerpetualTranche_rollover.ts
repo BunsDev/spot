@@ -408,7 +408,7 @@ describe("PerpetualTranche", function () {
           });
         });
 
-        describe("with sufficient balance", function(){
+        describe("with sufficient balance", function () {
           beforeEach(async function () {
             await feeToken.mint(perp.address, toFixedPtAmt("1"));
           });
@@ -437,7 +437,7 @@ describe("PerpetualTranche", function () {
             expect(r[0]).to.eq(toFixedPtAmt("500"));
             expect(r[1]).to.eq(toFixedPtAmt("-1"));
           });
-        })
+        });
       });
     });
 
