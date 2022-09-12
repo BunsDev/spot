@@ -1,4 +1,6 @@
 {
+  "network": "mainnet",
+  "startBlock": 15800099,
   "ampl": "0xD46bA6D942050d489DBd938a2C909A5d5039A161",
   "bondFactory": "0x72799FFD1F4CCF92eA2b1eE0CADa16a5461c4d96",
   "bondIssuer": "0x9443b779d4AedF97d2B93D7CDa5fA0BB6312DfF2",

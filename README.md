@@ -8,6 +8,7 @@ SPOT is an inflation-resistant store of value fully collateralized by AMPL backe
 ### Package organization
 
 * [spot-contracts](./spot-contracts): SPOT protocol smart contracts. 
+* [spot-subgraph](./spot-subgraph): Subgraph to index SPOT protocol on-chain data. 
 
 ## Licensing
 
