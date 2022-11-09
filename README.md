@@ -15,3 +15,5 @@ SPOT is an inflation-resistant store of value fully collateralized by AMPL backe
 The primary license for Spot is the Business Source License 1.1 (`BUSL-1.1`), see [`LICENSE`](./LICENSE). However, some files are dual licensed under `GPL-3.0-or-later`:
 
 - All files in `spot-contracts/contracts/_interfaces/` may also be licensed under `GPL-3.0-or-later` (as indicated in their SPDX headers), see [`spot-contracts/contracts/_interfaces/LICENSE`](./spot-contracts/contracts/_interfaces/LICENSE)
+
+- All files in `spot-subgraph` may also be licensed under `GPL-3.0-or-later`, see [`spot-subgraph/LICENSE`](./spot-subgraph/LICENSE)
